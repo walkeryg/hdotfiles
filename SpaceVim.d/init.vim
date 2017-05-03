@@ -1,4 +1,5 @@
 let g:spacevim_enable_guicolors=0
+let g:spacevim_terminal_cursor_shape = 0
 " call SpaceVim#layers#load('lang#python')
 let g:spacevim_simple_mode=0
 " let g:spacevim_enable_neomake=1 default
