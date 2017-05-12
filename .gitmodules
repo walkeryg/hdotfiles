@@ -1,0 +1,3 @@
+[submodule "SpaceVim"]
+	path = SpaceVim
+	url = https://github.com/walkeryg/SpaceVim.git
