@@ -53,7 +53,7 @@ def _SelectProjectDirFZF(dir_list):
         sys.exit(1)
 
 def _SelectProjectFilesFZF(dir_list):
-    cmd = ['ag', '-g']
+    cmd = ['ag', '-g', '']
     cmd.extend(dir_list)
     print(cmd)
     # proc = subprocess.Popen('ag -g custom',shell=True,stdout=subprocess.PIPE)
@@ -61,7 +61,15 @@ def _SelectProjectFilesFZF(dir_list):
         # print(line)
     # proc.stdout.close()
     search_proc = subprocess.Popen(cmd,stdout=subprocess.PIPE)
-    fzf_proc = subprocess.Popen(['fzf'],stdin=search_proc.stdout,stdout=)
+    fzf_proc = subprocess.Popen(['fzf'],stdin=search_proc.stdout,stdout=subprocess.PIPE)
+
+    fzf_result = fzf_proc.stdout.read().strip()
+    fzf_proc.stdout.close()
+    _print('fzf result: %s' %fzf_result)
+    if fzf_proc.wait() != 0:
+        _print('fatal: fzf errors', file=sys.stderr)
+        sys.exit(1)
+
 
 def main(args):
     project_rc = _FindProjectRc()
