@@ -1,22 +1,30 @@
 sudo apt update
 sudo apt-get install build-essential cmake
+sudo apt-get install curl
+sudo apt-get install git
 sudo apt-get install zsh
-sudo apt-get install silversearcher-ag
-sudo apt-get install rxvt-unicode
-sudo apt-get install tmux
-sudo apt-get install jq
-sudo apt-get install tree
-
 sudo apt-get install net-tools
+sudo apt-get install openssh-server
+sudo apt-get install vim
+sudo apt-get install ibus-pinyin
+sudo apt-get install ubuntu-make
+curl -sLf https://spacevim.org/install.sh | bash
 
-location=/usr/local/bin/tldr
-sudo wget -qO $location https://raw.githubusercontent.com/pepa65/tldr-bash-client/master/tldr
-sudo chmod +x $location
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
 
-#sudo add-apt-repository ppa:niko2040/e19
-#sudo apt-get update
-#sudo apt-get install enlightenment
-#sudo apt-get install terminology
+echo "export PATH='$(brew --prefix)/bin:$(brew --prefix)/sbin'":'"$PATH"' >>~/.profile
+
+brew install the_silver_searcher
+brew install tmux
+# sudo apt-get install rxvt-unicode
+brew install jq
+brew install tree
+brew install tldr
+brew install neovim
+
+# location=/usr/local/bin/tldr
+# sudo wget -qO $location https://raw.githubusercontent.com/pepa65/tldr-bash-client/master/tldr
+# sudo chmod +x $location
 
 #sudo add-apt-repository ppa:h-realh/roxterm
 #sudo apt-get update
@@ -24,15 +32,6 @@ sudo chmod +x $location
 
 cat /etc/shells
 chsh -s /usr/bin/zsh
-
-sudo apt-get install curl
-sudo apt-get install git
-sudo apt-get install vim
-sudo apt-get install neovim
-sudo apt-get install ibus-pinyin
-curl -sLf https://spacevim.org/install.sh | bash
-
-sudo apt-get install ubuntu-make
 
 #sublime
 wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
