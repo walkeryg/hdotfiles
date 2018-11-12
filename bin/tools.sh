@@ -42,6 +42,12 @@ brew install diff-so-fancy
 brew install fd
 brew install ncdu
 brew install noti
+brew install lolcat
+brew install neofetch
+brew install tig
+brew install autojump
+brew install exa
+brew install colorls
 
 # location=/usr/local/bin/tldr
 # sudo wget -qO $location https://raw.githubusercontent.com/pepa65/tldr-bash-client/master/tldr
