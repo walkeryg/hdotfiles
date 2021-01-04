@@ -12,6 +12,8 @@ else
   cp ~/.oh-my-zsh/templates/zshrc.zsh-template zshrc
   dircolors LS_COLORS >> zshrc
 
+  sed -i 's/plugins=.*/plugins=(git colorize zsh-syntax-highlighting-filetypes zsh-syntax-highlighting zsh-autosuggestions)/g'
+
   cat custom_cmd_alias >> zshrc
   my zshrc ~/.zshrc
   # plugins=( git zsh-syntax-highlighting zsh-autosuggestions autojump zsh-nvm )
