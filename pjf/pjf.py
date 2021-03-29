@@ -18,7 +18,7 @@ def _print(*objects, **kwargs):
     out.write(sep.join(objects) + end)
 
 def _FindProjectRc():
-    
+
     curdir = os.getcwd()
     prjrc = None
 
@@ -26,7 +26,7 @@ def _FindProjectRc():
     while curdir != '/' \
             and curdir != olddir \
             and not prjrc:
-        prjrc = os.path.join(curdir, prjrc_conf)
+                prjrc = os.path.join(curdir, prjrc_conf)
         if not os.path.isfile(prjrc):
             prjrc = None
             olddir = curdir
@@ -54,9 +54,9 @@ def _GetIndexFile(project_rc):
 def _SelectProjectDirFZF(dir_list):
 
     proc = subprocess.Popen('sh -c fzf -m',
-                            shell=True,
-                            stdout=subprocess.PIPE
-                            )
+            shell=True,
+            stdout=subprocess.PIPE
+            )
     fzf_result = proc.stdout.read().strip()
     proc.stdout.close()
     _print('fzf result %s:' %fzf_result)
@@ -67,17 +67,13 @@ def _SelectProjectDirFZF(dir_list):
         _print('fatal: fzf errors', file=sys.stderr)
         sys.exit(1)
 
-def _SelectProjectFilesFZF(dir_list):
+def _SelectProjectFilesFZF(indexfile):
 
-    cmd = ['ag', '-g', '']
-    cmd.extend(dir_list)
+    cmd = ['cat']
+    cmd.extend(indexfile)
     print(cmd)
-    # proc = subprocess.Popen('ag -g custom',shell=True,stdout=subprocess.PIPE)
-    # for line in proc.stdout.readlines():
-        # print(line)
-    # proc.stdout.close()
-    search_proc = subprocess.Popen(cmd,stdout=subprocess.PIPE)
-    fzf_proc = subprocess.Popen(['fzf'],stdin=search_proc.stdout,stdout=subprocess.PIPE)
+    cat_proc = subprocess.Popen(cmd,stdout=subprocess.PIPE)
+    fzf_proc = subprocess.Popen(['fzf'],stdin=cat_proc.stdout,stdout=subprocess.PIPE)
 
     fzf_result = fzf_proc.stdout.read().strip()
     fzf_proc.stdout.close()
@@ -85,6 +81,9 @@ def _SelectProjectFilesFZF(dir_list):
     if fzf_proc.wait() != 0:
         _print('fatal: fzf errors', file=sys.stderr)
         sys.exit(1)
+
+def _IsNeedReIndex(dir_list, indexfile):
+    return True
 
 def _IndexProjectFiles(dir_list, indexfile):
 
@@ -112,7 +111,10 @@ def main(args):
     dir_list = _ParseProjectDir(project_rc)
     print(dir_list)
     indexfile = _GetIndexFile(project_rc)
-    _IndexProjectFiles(dir_list,  indexfile)
 
+    if _IsNeedReIndex:
+        _IndexProjectFiles(dir_list,  indexfile)
+
+    _SelectProjectFilesFZF(indexfile)
 if __name__ == '__main__':
     main(sys.argv[1:])
