@@ -5,3 +5,4 @@ alias preview="fzf --preview 'bat --color \"always\" {}'"
 alias ping='prettyping'
 alias du="ncdu --color dark -rr -x --exclude .git --exclude node_modules"
 alias help='tldr'
+alias vi='nvim'
