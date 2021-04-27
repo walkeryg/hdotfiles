@@ -1,0 +1,6 @@
+# checkout out which branch you want to push
+1. repo forall -c 'echo $REPO_PROJECT; git checkout -b r-fs-release'
+# create project on gerrit
+2. repo forall -c 'echo $REPO_PROJECT; ssh -p 29418 walker_yang@localhost gerrit create-project --owner admin $REPO_PROJECT;'
+# push branch into gerrit
+3. repo forall -c 'echo $REPO_PROJECT; git push ssh://walker_yang@localhost:29418/$REPO_PROJECT +refs/heads/*'

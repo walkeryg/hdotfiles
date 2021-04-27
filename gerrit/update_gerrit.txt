@@ -1,0 +1,8 @@
+repo abandon r-fs-release
+repo abandon realtek/android-11/master
+repo abandon realtek/master
+repo abandon realtek/tellus
+repo abandon q-tv-ref-dev
+repo forall -c 'echo "$REPO_PROJECT":"$REPO_RREV"; git checkout -b $REPO_RREV'
+repo forall -c 'echo "$REPO_PROJECT"; git push ssh://walker_yang@localhost:29418/$REPO_PROJECT +refs/heads/*'
+ssh -p 29418 localhost gerrit create-project kernel/rtk_aosp/platform/packages/apps/Car/Calendar
