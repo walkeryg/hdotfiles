@@ -1,0 +1,23 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "args": [
+                "-f",
+                "/home/walker_yang/WorkShop/realtek/hisense/android-10/vendor/realtek/common/ATV/frameworks/native/libs/Platform_Lib/AudioUtil/AudioUtil.cpp",
+                "-r",
+                "/home/walker_yang/WorkShop/realtek/hisense/android-10",
+                "-e",
+                "/home/walker_yang/WorkShop/realtek/hisense/android-10/vendor/realtek/common/ATV/frameworks/native/rtkhal/hal_src/common/inc"
+            ],
+            "console": "integratedTerminal"
+        }
+    ]
+}

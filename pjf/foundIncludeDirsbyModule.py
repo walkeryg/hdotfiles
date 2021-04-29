@@ -1,8 +1,10 @@
-#!/usr/bin/python3
+#!/usr/bin"python3"
 
 import json
 import os
+import subprocess
 import argparse
+import re
 
 MODULE = "librtk_omx_vdec"
 MODUE_INFO_JSON = 'module-info.json'
@@ -17,16 +19,16 @@ class ModuleHelper(object):
         self.module_info_json = module_info_json
         self.prefix = prefix 
     
-    def Init(self):
+    def init(self):
         with open(self.module_info_json) as f:
             self.all_mod = json.load(f)
 
-    def FindDependency(self, target: str):
+    def find_dependency(self, target: str):
         module = self.all_mod.get(target)
         dependency = module.get("dependencies")
         return dependency
     
-    def FindPath(self, target: str):
+    def find_path(self, target: str):
         module = self.all_mod.get(target)
         path = module.get("path")[0]
         realpath = os.path.join(self.prefix, path)
@@ -35,7 +37,7 @@ class ModuleHelper(object):
         else:
             return ""
 
-    def FindSoongIncludePath(self, target: str):
+    def find_soong_include_path(self, target: str):
         module = self.all_mod.get(target)
         path = module.get("path")[0]
         realpath = os.path.join(self.prefix, SOONG, path)
@@ -46,7 +48,7 @@ class ModuleHelper(object):
             return header_include
         return ""
 
-    def FindIncludePath(self, target: str):
+    def find_include_path(self, target: str):
         module = self.all_mod.get(target)
         path = module.get("path")[0]
         realpath = os.path.join(self.prefix, path)
@@ -82,6 +84,8 @@ class ModuleHelper(object):
             # print("not found for " + target)
             return ""
 
+
+
 def main():
     parse = argparse.ArgumentParser(description="Process input args")
     parse.add_argument("-m", action='store', dest='module', default='', help='module to resolve headers')
@@ -101,15 +105,15 @@ def main():
         return
 
     helper = ModuleHelper(results.module_info, results.path_prefix)
-    helper.Init()
+    helper.init()
     target = results.module
     header_list = []
-    dependency = helper.FindDependency(target)
+    dependency = helper.find_dependency(target)
     for l in dependency:
         if l.startswith(HARDWARE_PATTEN) or l.startswith(VENDOR_HARDWARE_PATTEN):
-            header_inc = helper.FindSoongIncludePath(l)
+            header_inc = helper.find_soong_include_path(l)
         else:
-            header_inc = helper.FindIncludePath(l)
+            header_inc = helper.find_include_path(l)
         if not header_inc == "":
             header_list.append(header_inc)
     
