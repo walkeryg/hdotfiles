@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Current File",
+            "name": "Python: generate_compdb",
             "type": "python",
             "request": "launch",
             "program": "${file}",
@@ -15,6 +15,24 @@
                 "build.ninja",
                 "--root",
                 "/home/walker_yang/WorkShop/realtek/tcl/mac7p_11/kernel/android/R",
+                "-m",
+                "libfpp",
+                "librtk_halex_led"
+            ]
+        },
+        {
+            "name": "Python: cut compdb",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": [
+                "--infile",
+                "/home1/walker_yang/tcl/2851A_R/kernel/android/R/out/soong/development/ide/compdb/compile_commands.json",
+                "--outfile",
+                "/home1/walker_yang/tcl/2851A_R/kernel/android/R/system/netd/server/compile_commands.json",
+                "--prefix",
+                "system/netd/server"
             ]
         }
     ]

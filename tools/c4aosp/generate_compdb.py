@@ -126,6 +126,17 @@ class NinjaHandle(object):
                         command = self.parse_command(command_match.group("args"))
                     continue
 
+            # encounter file end, the last one should append 
+            if command != "" and file != "":
+            # we can append last compdb records, when we encounter a new rule
+                self.compdb.append({
+                    'directory': self.directory,
+                    'arguments': command.split(),
+                    "file": file
+                })
+            command = ""
+            file = ""
+
         with open('compile_commands.json', 'w') as compdb_file:
             json.dump(self.compdb, compdb_file, indent=1)
         
