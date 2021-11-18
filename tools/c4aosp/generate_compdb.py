@@ -40,11 +40,12 @@ BUILD_PATTERN = re.compile(r'^\s*build\s+.*:\s*(?P<rule>\S+)\s+(?P<file>\S+)')
 # the dependencys will including all obj & so & toolchain
 
 class NinjaHandle(object):
-    def __init__(self, filename: str, root: str):
+    def __init__(self, filename: str, root: str, outpath: str=""):
         self.filename = filename
         self.rules = {}
         self.compdb = []
         self.directory = root
+        self.outpath = outpath
         self.cat_cache = {}
 
     def cat_expand(self, match):
@@ -137,7 +138,7 @@ class NinjaHandle(object):
             command = ""
             file = ""
 
-        with open('compile_commands.json', 'w') as compdb_file:
+        with open(os.path.join(self.outpath, 'compile_commands.json'), 'w') as compdb_file:
             json.dump(self.compdb, compdb_file, indent=1)
         
     def gen_compile_commands_for_files(self, file_list: Set[str]):
@@ -173,7 +174,7 @@ class NinjaHandle(object):
                         # parser_command will check again
                         command = self.parse_command(command_match.group("args"))
                     continue
-        with open('compile_commands.json', 'w') as compdb_file:
+        with open(os.path.join(self.outpath, 'compile_commands.json'), 'w') as compdb_file:
             json.dump(self.compdb, compdb_file, indent=1)
 
     def gen_compile_commands_for_directory(self, directory:str):
@@ -209,7 +210,7 @@ class NinjaHandle(object):
                         # parser_command will check again
                         command = self.parse_command(command_match.group("args"))
                     continue
-        with open('compile_commands.json', 'w') as compdb_file:
+        with open(os.path.join(self.outpath, 'compile_commands.json'), 'w') as compdb_file:
             json.dump(self.compdb, compdb_file, indent=1)
 
     def gen_all_for_ninja(self):
@@ -249,7 +250,7 @@ class NinjaHandle(object):
                         command = self.parse_command(command_match.group("args"))
                     continue
 
-        with open('compile_commands.json', 'w') as compdb_file:
+        with open(os.path.join(self.outpath, 'compile_commands.json'), 'w') as compdb_file:
             json.dump(self.compdb, compdb_file, indent=1)
 
 def main():
@@ -273,6 +274,8 @@ def main():
 
     parser.add_argument("-d", "--dir", nargs=1, help="which directory you want to generate compile_commands, must relative dir with root")
 
+    parser.add_argument("-o", "--out_path", nargs="?", default="")
+
     args = parser.parse_args()
 
 
@@ -290,7 +293,7 @@ def main():
     if targetn > 1:
         exit(1, 'modules or files or dir should not co-exist, only one can be specified')
 
-    ninja_handle = NinjaHandle(args.ninja_file, args.root)
+    ninja_handle = NinjaHandle(args.ninja_file, args.root, args.out_path)
 
     if args.modules is not None:
         module_sets = set(args.modules)
