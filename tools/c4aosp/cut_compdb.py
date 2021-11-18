@@ -35,11 +35,11 @@ class NinjaCache(object):
 def main():
     parser = argparse.ArgumentParser(description='cut a small compile_commands from whole bigger one')
 
-    parser.add_argument('-i', '--infile', help='the whole bigger compile_commands file')
+    parser.add_argument('-i', '--infile', help='the whole bigger compile_commands file, check out/soong/development/ide/compdb/compile_commands.json, you can add SOONG_GEN_COMPDB=1 && SOONG_GEN_COMPDB_DEBUG=1 at you build command for android')
 
-    parser.add_argument('-o', '--outfile',  help='the compile_commands file cut from infile')
+    parser.add_argument('-o', '--outfile',  help='the compile_commands file cut from infile, you can also set this with path, it will generate the outfile in the path')
     
-    parser.add_argument('--prefix', help='which dir files you want to generate')
+    parser.add_argument('--path', help='which dir files you want to generate compile_commands')
 
     args = parser.parse_args()
 

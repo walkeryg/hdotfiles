@@ -176,6 +176,42 @@ class NinjaHandle(object):
         with open('compile_commands.json', 'w') as compdb_file:
             json.dump(self.compdb, compdb_file, indent=1)
 
+    def gen_compile_commands_for_directory(self, directory:str):
+        with open(self.filename) as ninja_file:
+            file = ""
+            command = ""
+            for line in ninja_file:
+                rule_match = RULE_PATTERN.match(line)
+                if rule_match:
+                    rule_name = rule_match.group(1)
+                    if command != "" and file != "":
+                    # we can append last compdb records, when we encounter a new rule
+                        self.compdb.append({
+                            'directory': self.directory,
+                            'arguments': command.split(),
+                            "file": file
+                        })
+                    command = ""
+                    file = ""
+                    continue
+
+                description_c_match = DESCRIPTION_C_PATTERN.match(line)
+                if description_c_match:
+                    file = description_c_match.group("file")
+                    if not file.startswith(directory):
+                        file = ""
+                    continue
+
+                command_match = COMMAND_PATTERN.match(line)
+                if command_match:
+                    if file != "":
+                        # only command after c pattern could be clang/clang++ command
+                        # parser_command will check again
+                        command = self.parse_command(command_match.group("args"))
+                    continue
+        with open('compile_commands.json', 'w') as compdb_file:
+            json.dump(self.compdb, compdb_file, indent=1)
+
     def gen_all_for_ninja(self):
         cur_module = ""
         file = ""
@@ -235,14 +271,24 @@ def main():
     
     parser.add_argument('-f', '--files', nargs='+')
 
+    parser.add_argument("-d", "--dir", nargs=1, help="which directory you want to generate compile_commands, must relative dir with root")
+
     args = parser.parse_args()
 
 
     if args.ninja_file is None:
         exit(1, 'no ninja_file is specified')
 
-    if args.modules is not None and args.files is not None:
-        exit(1, 'modules or files should not co-exist')
+    targetn = 0
+    if args.modules is not None:
+        targetn += 1
+    if args.files is not None:
+        targetn += 1
+    if args.dir is not None:
+        targetn += 1
+
+    if targetn > 1:
+        exit(1, 'modules or files or dir should not co-exist, only one can be specified')
 
     ninja_handle = NinjaHandle(args.ninja_file, args.root)
 
@@ -256,7 +302,11 @@ def main():
         if len(file_sets) > 0:
             ninja_handle.gen_compile_commands_for_files(file_sets)
             
-    if args.modules is None and args.files is None:
+    if args.dir is not None:
+        directory = args.dir[0]
+        ninja_handle.gen_compile_commands_for_directory(directory)
+
+    if args.modules is None and args.files is None and args.dir is None:
         ninja_handle.gen_all_for_ninja()
 
 if __name__ == "__main__":
