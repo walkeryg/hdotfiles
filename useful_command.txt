@@ -10,3 +10,6 @@ vim 技巧：
 
 :sort
 :g/^\(.\+\)$\n\1/d
+
+github token:
+git remote set-url origin https://<your_token>@github.com/<USERNAME>/<REPO>.git

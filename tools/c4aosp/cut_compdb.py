@@ -39,22 +39,30 @@ def main():
 
     parser.add_argument('-o', '--outfile',  help='the compile_commands file cut from infile, you can also set this with path, it will generate the outfile in the path')
     
-    parser.add_argument('--path', help='which dir files you want to generate compile_commands')
+    parser.add_argument('--path', help='which dir files you want to generate compile_commands, must relative with aosp top')
 
     args = parser.parse_args()
 
 
     if args.infile is None:
         exit(1, 'no infile is specified')
+    else:
+        if not os.path.exists(args.infile):
+            exit(1, 'infile is not exist')
+        if not os.path.basename(args.infile) == "compile_commands.json":
+            exit(1, 'infile basename must be compile_commands.json')
 
     if args.outfile is None:
         exit(1, 'no outfile is specified')
+    else:
+        if not os.path.basename(args.outfile) == "compile_commands.json":
+            exit(1, 'outfile basename must be compile_commands.json')
 
     if args.infile == args.outfile:
         exit(1, 'infile path should different with outfile')
     
-    if args.prefix is None:
-        exit(1, 'prefix not specified')
+    if args.path is None:
+        exit(1, 'prefix path not specified')
 
     try:
         with open(args.infile, 'rb') as fin:
@@ -66,7 +74,7 @@ def main():
                 file:str = jo['file']
                 directory:str = jo['directory']
                 arguments:str = jo['arguments']
-                if file.startswith(args.prefix):
+                if file.startswith(args.path):
                     nj_cache.append(directory, arguments, file)
             nj_cache.dump()
 

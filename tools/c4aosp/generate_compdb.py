@@ -17,7 +17,8 @@ RULE_PATTERN = re.compile(r'^\s*rule\s+(\S+)$')
 DESCRIPTION_PATTERN = re.compile(r'^\s*description\s*=\s*target.*:\s*(?P<module>\S+)\s*.*$')
 DESCRIPTION_PREBUILT_PATTERN = re.compile(r'^\s*description\s*=\s*target\s+Prebuilt\s*:\s*(?P<module>\S+)\s*.*$')
 DESCRIPTION_SHARED_PATTERN = re.compile(r'^\s*description\s*=\s*target\s+SharedLib\s*:\s*(?P<module>\S+)\s*.*$')
-DESCRIPTION_C_PATTERN = re.compile(r'^\s*description\s*=\s*target\s+thumb\s+C\+*\s*:\s*(?P<module>\S+)\s*<=\s*(?P<file>\S+)\s*$')
+DESCRIPTION_C_THUMB_PATTERN = re.compile(r'^\s*description\s*=\s*target\s+thumb\s+C\+*\s*:\s*(?P<module>\S+)\s*<=\s*(?P<file>\S+)\s*$')
+DESCRIPTION_C_ARM_PATTERN = re.compile(r'^\s*description\s*=\s*target\s+arm\s+C\+*\s*:\s*(?P<module>\S+)\s*<=\s*(?P<file>\S+)\s*$')
 COMMAND_PATTERN = re.compile(r'^\s*command\s*=\s*(?P<shell>\S+)\s*-c\s*"(?P<args>.+)"$')
 BUILD_PATTERN = re.compile(r'^\s*build\s+.*:\s*(?P<rule>\S+)\s+(?P<file>\S+)')
 
@@ -113,7 +114,11 @@ class NinjaHandle(object):
                     if module_name in module_list:
                         if status.__contains__(module_name) is not True:
                             status[module_name] = True
-                        description_c_match = DESCRIPTION_C_PATTERN.match(line)
+
+                        description_c_match = DESCRIPTION_C_THUMB_PATTERN.match(line)
+                        if not description_c_match:
+                            description_c_match = DESCRIPTION_C_ARM_PATTERN.match(line)
+
                         if description_c_match:
                             file = description_c_match.group("file")
                     cur_module = module_name
@@ -160,7 +165,10 @@ class NinjaHandle(object):
                     file = ""
                     continue
 
-                description_c_match = DESCRIPTION_C_PATTERN.match(line)
+                description_c_match = DESCRIPTION_C_THUMB_PATTERN.match(line)
+                if not description_c_match:
+                    description_c_match = DESCRIPTION_C_ARM_PATTERN.match(line)
+
                 if description_c_match:
                     file = description_c_match.group("file")
                     if file not in file_list:
@@ -196,7 +204,10 @@ class NinjaHandle(object):
                     file = ""
                     continue
 
-                description_c_match = DESCRIPTION_C_PATTERN.match(line)
+                description_c_match = DESCRIPTION_C_THUMB_PATTERN.match(line)
+                if not description_c_match:
+                    description_c_match = DESCRIPTION_C_ARM_PATTERN.match(line)
+
                 if description_c_match:
                     file = description_c_match.group("file")
                     if not file.startswith(directory):
@@ -236,7 +247,11 @@ class NinjaHandle(object):
                 description_match = DESCRIPTION_PATTERN.match(line)
                 if description_match:
                     module_name = description_match.group('module')
-                    description_c_match = DESCRIPTION_C_PATTERN.match(line)
+
+                    description_c_match = DESCRIPTION_C_THUMB_PATTERN.match(line)
+                    if not description_c_match:
+                        description_c_match = DESCRIPTION_C_ARM_PATTERN.match(line)
+
                     if description_c_match:
                         file = description_c_match.group("file")
                     cur_module = module_name
