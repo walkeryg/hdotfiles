@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: generate_compdb",
+            "name": "Python: generate_compdb from modules",
             "type": "python",
             "request": "launch",
             "program": "${file}",
@@ -18,6 +18,21 @@
                 "-m",
                 "libfpp",
                 "librtk_halex_led"
+            ]
+        },
+        {
+            "name": "Python: generate_compdb from dir",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": [
+                "--ninja_file",
+                "build.ninja",
+                "--root",
+                "/home/walker_yang/WorkShop/realtek/tcl/mac7p_11/kernel/android/R",
+                "-d",
+                "vendor/realtek/common/ATV/frameworks/native"
             ]
         },
         {
