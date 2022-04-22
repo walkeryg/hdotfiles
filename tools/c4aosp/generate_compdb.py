@@ -143,9 +143,6 @@ class NinjaHandle(object):
             command = ""
             file = ""
 
-        with open(os.path.join(self.outpath, 'compile_commands.json'), 'w') as compdb_file:
-            json.dump(self.compdb, compdb_file, indent=1)
-        
     def gen_compile_commands_for_files(self, file_list: Set[str]):
         with open(self.filename) as ninja_file:
             file = ""
@@ -182,8 +179,6 @@ class NinjaHandle(object):
                         # parser_command will check again
                         command = self.parse_command(command_match.group("args"))
                     continue
-        with open(os.path.join(self.outpath, 'compile_commands.json'), 'w') as compdb_file:
-            json.dump(self.compdb, compdb_file, indent=1)
 
     def gen_compile_commands_for_directory(self, directory:str):
         with open(self.filename) as ninja_file:
@@ -221,8 +216,6 @@ class NinjaHandle(object):
                         # parser_command will check again
                         command = self.parse_command(command_match.group("args"))
                     continue
-        with open(os.path.join(self.outpath, 'compile_commands.json'), 'w') as compdb_file:
-            json.dump(self.compdb, compdb_file, indent=1)
 
     def gen_all_for_ninja(self):
         cur_module = ""
@@ -265,6 +258,7 @@ class NinjaHandle(object):
                         command = self.parse_command(command_match.group("args"))
                     continue
 
+    def dump_to_file(self):
         with open(os.path.join(self.outpath, 'compile_commands.json'), 'w') as compdb_file:
             json.dump(self.compdb, compdb_file, indent=1)
 
@@ -310,22 +304,37 @@ def main():
 
     ninja_handle = NinjaHandle(args.ninja_file, args.root, args.out_path)
 
+    gen_action_count = 0
+    if args.modules is not None:
+        gen_action_count += 1
+    if args.files is not None:
+        gen_action_count += 1
+    if args.dir is not None:
+        gen_action_count += 1
+    
+    if gen_action_count > 1:
+        exit(1, "at most on of modules, files and dir can be specified")
+
     if args.modules is not None:
         module_sets = set(args.modules)
         if len(module_sets) > 0:
             ninja_handle.gen_compile_commands_for_modules(module_sets)
+            ninja_handle.dump_to_file()
 
     if args.files is not None:
         file_sets = set(args.files)
         if len(file_sets) > 0:
             ninja_handle.gen_compile_commands_for_files(file_sets)
+            ninja_handle.dump_to_file()
             
     if args.dir is not None:
         directory = args.dir[0]
         ninja_handle.gen_compile_commands_for_directory(directory)
+        ninja_handle.dump_to_file()
 
     if args.modules is None and args.files is None and args.dir is None:
         ninja_handle.gen_all_for_ninja()
+        ninja_handle.dump_to_file()
 
 if __name__ == "__main__":
     main()
