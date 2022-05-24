@@ -142,6 +142,7 @@ class NinjaHandle(object):
                 })
             command = ""
             file = ""
+        print("found " + str(len(self.compdb)) + " items in ninja")
 
     def gen_compile_commands_for_files(self, file_list: Set[str]):
         with open(self.filename) as ninja_file:
@@ -179,6 +180,7 @@ class NinjaHandle(object):
                         # parser_command will check again
                         command = self.parse_command(command_match.group("args"))
                     continue
+        print("found " + str(len(self.compdb)) + " items in ninja")
 
     def gen_compile_commands_for_directory(self, directory:str):
         with open(self.filename) as ninja_file:
@@ -216,6 +218,7 @@ class NinjaHandle(object):
                         # parser_command will check again
                         command = self.parse_command(command_match.group("args"))
                     continue
+        print("found " + str(len(self.compdb)) + " items in ninja")
 
     def gen_all_for_ninja(self):
         cur_module = ""
@@ -257,6 +260,7 @@ class NinjaHandle(object):
                         # parser_command will check again
                         command = self.parse_command(command_match.group("args"))
                     continue
+        print("found " + str(len(self.compdb)) + " items in ninja")
 
     def dump_to_file(self):
         with open(os.path.join(self.outpath, 'compile_commands.json'), 'w') as compdb_file:

@@ -3,10 +3,10 @@
 from __future__ import print_function
 
 import argparse
+import ijson
 import json
 import os
 import re
-from tkinter import N
 from generate_compdb import NinjaHandle
 
 from typing import List
@@ -30,6 +30,7 @@ class NinjaCache(object):
 
     def dump(self):
         # dump to file
+        self.compdb.sort(key = lambda item:item["file"])
         try:
             with open(self.filename, "w") as compdb_file:
                 json.dump(self.compdb, compdb_file, indent=1)
@@ -100,7 +101,7 @@ def main():
 
         except EnvironmentError: # parent of IOError, OSError *and* WindowsError where available
             exit(1, "infile error")
-        print("found " + len(nj_cache.compdb) + " in " + bp_compdb)
+        print("found " + str(len(nj_cache.compdb)) + " in " + bp_compdb)
     else:
         print("Not found bp_compdb:" + bp_compdb)
         print("You could generate the whole compile_commands.json by SOONG_GEN_COMPDB=1 SOONG_GEN_COMPDB_DEBUG=1 when you compile, see readme")
